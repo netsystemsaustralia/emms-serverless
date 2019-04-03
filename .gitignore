@@ -1,0 +1,7 @@
+# Ignore everything:
+*
+# except these files and directory
+!.gitignore
+!downloads/
+!*.py
+!tracker.csv
