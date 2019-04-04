@@ -52,6 +52,9 @@ class TrackerHelper:
             print('no changes detected')
 
     def fileExistsInTracker(self, filename):
+        if self.loaded == False:
+            self.loadTrackerFile()
+            
         if filename in self.rows.keys():
             print('%s file found in tracker' % filename)
             return self.rows[filename]

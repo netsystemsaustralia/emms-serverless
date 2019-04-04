@@ -5,6 +5,14 @@ import shutil
 import time
 import datetime
 
+def getCsvFilesFromDirectory(path):
+    csvFiles = []
+    for file in os.listdir(path):
+        if file.endswith(".CSV"):
+            csvFiles.append(os.path.join(path, file))
+    
+    return csvFiles
+
 def getCurrentTimestamp():
     ts = time.time()
     st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')

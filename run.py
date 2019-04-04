@@ -2,12 +2,14 @@ from emms_website_helper import EmmsWebsiteHelper
 from zip_helper import ZipHelper
 from emms_file_helper import EmmsFileHelper
 from tracker_helper import TrackerHelper
+from s3_helper import S3Helper
 import utils
 
 ewh = EmmsWebsiteHelper()
 zh = ZipHelper()
 efh = EmmsFileHelper()
 th = TrackerHelper()
+s3h = S3Helper()
 
 def manageFile(link):
     print(link)
@@ -15,7 +17,7 @@ def manageFile(link):
     fileInTracker = th.fileExistsInTracker(link['name'])
     processLink = True
     if fileInTracker != None:
-        if fileInTracker[1] in ['downloaded', 'extracted']:
+        if fileInTracker[1] in ['processed', 'uploaded']: # TBC
             processLink = False
     
     if processLink:
@@ -31,6 +33,17 @@ def manageFile(link):
         # extract file
         zh.unzipAll(dfl, extractFolder)
         th.updateTrackerObject(link['name'], 'extracted', utils.getCurrentTimestamp())
+        # process file
+        for path in utils.getCsvFilesFromDirectory(extractFolder):
+            t = efh.extractTables(path)
+            th.updateTrackerObject(link['name'], 'processed', utils.getCurrentTimestamp())
+            #write tables to files and upload to S3
+            for table in t:
+                newFile = efh.writeTableToFile(table, extractFolder)
+                key = '%s/%s.csv' % (table['table'], table['timestamp'])
+                s3h.uploadFile(newFile, 'netsystems-emms', key)
+            th.updateTrackerObject(link['name'], 'uploaded', utils.getCurrentTimestamp())
+                
     else:
         print('%s already processed' % link['name'])
 
