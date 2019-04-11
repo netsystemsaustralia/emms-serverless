@@ -22,7 +22,7 @@ class EmmsWebsiteHelper:
             #print(link.get('href'))
             #print(link.text)
             links.append({'name': link.text, 'href': '%s%s' % (self.base_url, link.get('href'))})
-            if i == 3:
+            if i == 5000:
                 break
             i = i + 1
         return links

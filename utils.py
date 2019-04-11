@@ -39,6 +39,14 @@ def deleteFolder(path):
     else:
         print ("Successfully deleted the directory %s " % path)
 
+def deleteFile(path):
+    try:
+        os.remove(path)
+    except OSError:
+        print ("Removeal of the file %s failed" % path)
+    else:  
+        print ("Successfully removed the file %s " % path)
+
 if __name__ == '__main__':
     print(randomStringDigits(10))
     createFolder('./bobby')

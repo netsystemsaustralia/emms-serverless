@@ -43,6 +43,11 @@ def manageFile(link):
                 key = '%s/%s.csv' % (table['table'], table['timestamp'])
                 s3h.uploadFile(newFile, 'netsystems-emms', key)
             th.updateTrackerObject(link['name'], 'uploaded', utils.getCurrentTimestamp())
+        
+        # remove directory - tbd only if successful?
+        utils.deleteFolder(extractFolder)
+        # delete original downloaded file
+        utils.deleteFile(dfl)
                 
     else:
         print('%s already processed' % link['name'])
