@@ -40,7 +40,7 @@ def manageFile(link):
             #write tables to files and upload to S3
             for table in t:
                 newFile = efh.writeTableToFile(table, extractFolder)
-                key = '%s/%s.csv' % (table['table'], table['timestamp'])
+                key = 'NEW_FORMAT/%s/%s.csv' % (table['table'], table['dispatchTimestamp'])
                 s3h.uploadFile(newFile, 'netsystems-emms', key)
             th.updateTrackerObject(link['name'], 'uploaded', utils.getCurrentTimestamp())
         

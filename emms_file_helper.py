@@ -9,6 +9,7 @@ class EmmsFileHelper:
         dataset = ''
         tableName = ''
         timestamp = ''
+        dispatchInterval = ''
 
         with open(fileName, 'r') as csvfile:
             c = csv.reader(csvfile, delimiter=',', quotechar='"')
@@ -20,16 +21,18 @@ class EmmsFileHelper:
                     timestamp = row[7]
                 if row[0] == 'I': # header row
                     if len(tableRows) > 0: # if there are table rows then create full table object and add it to tables list
-                        tables.append({'table': tableName, 'header': tableHeader, 'rows': tableRows, 'timestamp': timestamp})
+                        tables.append({'table': tableName, 'header': tableHeader, 'rows': tableRows, 'timestamp': timestamp, 'dispatchTimestamp': dispatchInterval})
                         tableRows = []
 
                     tableHeader = row[4:]
                     tableName = '%s_%s_%s' % (dataset, row[1], row[2])
                 if row[0] == 'D': # data row
                     tableRows.append(row[4:])
+                    if tableHeader[3] == 'DISPATCHINTERVAL':
+                        dispatchInterval = row[7]
                 if row[0] == 'C' and row[1] == 'END OF REPORT': # final row
                     if len(tableRows) > 0: # if there are table rows then create full table object and add it to tables list
-                        tables.append({'table': tableName, 'header': tableHeader, 'rows': tableRows, 'timestamp': timestamp})
+                        tables.append({'table': tableName, 'header': tableHeader, 'rows': tableRows, 'timestamp': timestamp, 'dispatchTimestamp': dispatchInterval})
                         tableRows = []
         
         return tables
